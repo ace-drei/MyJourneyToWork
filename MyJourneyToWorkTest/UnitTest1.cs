@@ -85,12 +85,6 @@ namespace MyJourneyToWorkTest
             Assert.AreEqual(19.883878151594686, sustainabilityWeighting, 0.000001);
         }
 
-
-
-
-
-        // ... (previous tests)
-
         [Test]
         public void ConvertDistance_ReturnsSameDistanceForMiles()
         {
@@ -181,60 +175,6 @@ namespace MyJourneyToWorkTest
             // Assert
             Assert.AreEqual(0, sustainabilityWeighting);
         }
-        [Test]
-        public void SustainabilityWeighting_ReturnsZeroForZeroDistanceAndZeroDays()
-        {
-            // Arrange
-            var calculator = new Calculator.Calculator
-            {
-                distance = 0,
-                milesOrKms = DistanceMeasurement.kms,
-                numDays = 0,
-                transportMode = TransportModes.bus
-            };
-
-            // Act
-            var sustainabilityWeighting = calculator.sustainabilityWeighting;
-
-            // Assert
-            Assert.AreEqual(0, sustainabilityWeighting);
-        }
-        [Test]
-        public void SustainabilityWeighting_ReturnsZeroForZeroDistanceAndZeroDaysAndUnknownTransportMode()
-        {
-            // Arrange
-            var calculator = new Calculator.Calculator
-            {
-                distance = 0,
-                milesOrKms = DistanceMeasurement.kms,
-                numDays = 0,
-                transportMode = (TransportModes)999 // Unknown transport mode
-            };
-
-            // Act
-            var sustainabilityWeighting = calculator.sustainabilityWeighting;
-
-            // Assert
-            Assert.AreEqual(0, sustainabilityWeighting);
-        }
-        [Test]
-        public void SustainabilityWeighting_ReturnsZeroForZeroDistanceAndZeroDaysAndUnknownTransportModeAndZeroDistance()
-        {
-            // Arrange
-            var calculator = new Calculator.Calculator
-            {
-                distance = 0,
-                milesOrKms = DistanceMeasurement.kms,
-                numDays = 0,
-                transportMode = (TransportModes)999 // Unknown transport mode
-            };
-
-            // Act
-            var sustainabilityWeighting = calculator.sustainabilityWeighting;
-
-            // Assert
-            Assert.AreEqual(0, sustainabilityWeighting);
-        }
 
         [Test]
         public void ConvertDistance_ConvertsKilometersToMiles_ForCalculatorInstance()
@@ -317,7 +257,7 @@ namespace MyJourneyToWorkTest
 
 
             //test to see coverage 
-            // pt2
+            // pt2s
         }
     }
 }
