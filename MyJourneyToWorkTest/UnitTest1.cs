@@ -314,6 +314,9 @@ namespace MyJourneyToWorkTest
                 Assert.IsNotNull(calculatorProperty);
                 Assert.IsTrue(calculatorProperty.GetCustomAttributes(typeof(BindPropertyAttribute), true).Length > 0);
             }
+
+
+            //test to see coverage 
         }
     }
 }
