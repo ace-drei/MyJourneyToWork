@@ -1,10 +1,15 @@
 using Calculator;
+using MyJourneyToWork.Pages;
 namespace MyJourneyToWorkTest
 {
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.RazorPages;
+    using MyJourneyToWork.Pages;
     using NUnit.Framework;
 
-    
-        [TestFixture]
+
+    [TestFixture]
     public class CalculatorTests
     {
         [Test]
@@ -283,6 +288,35 @@ namespace MyJourneyToWorkTest
             // Assert
             Assert.AreEqual(480, sustainabilityWeighting);
         }
+
+        //Testing for Privacy.cshtml.cs
+
+        [TestFixture]
+        public class CalculatorModelTests
+        {
+            [Test]
+            public void OnGet_Should_NotThrowException()
+            {
+                // Arrange
+                var calculatorModel = new CalculatorModel();
+
+                // Act & Assert
+                Assert.DoesNotThrow(() => calculatorModel.OnGet());
+            }
+
+            [Test]
+            public void CalculatorProperty_Should_HaveBindPropertyAttribute()
+            {
+                // Arrange
+                var calculatorProperty = typeof(CalculatorModel).GetProperty("calculator");
+
+                // Act & Assert
+                Assert.IsNotNull(calculatorProperty);
+                Assert.IsTrue(calculatorProperty.GetCustomAttributes(typeof(BindPropertyAttribute), true).Length > 0);
+            }
+        }
     }
 }
+
+
 
