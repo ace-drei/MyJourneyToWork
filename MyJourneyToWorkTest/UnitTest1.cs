@@ -255,9 +255,51 @@ namespace MyJourneyToWorkTest
                 Assert.IsTrue(calculatorProperty.GetCustomAttributes(typeof(BindPropertyAttribute), true).Length > 0);
             }
 
+            [Test]
+            public void ConvertDistance_ConvertsKmsToMiles()
+            {
+                // Arrange
+                var calculator = new Calculator.Calculator { distance = 10, milesOrKms = DistanceMeasurement.kms };
 
-            //test to see coverage 
-            // pt2s
+                // Act
+                var result = calculator.convertDistance();
+
+                // Assert
+                Assert.AreEqual(6.21371, result, 0.00001); // Check with a delta for floating-point precision
+            }
+
+            [Test]
+            public void ConvertDistance_DoesNotConvertMiles()
+            {
+                // Arrange
+                var calculator = new Calculator.Calculator { distance = 10, milesOrKms = DistanceMeasurement.miles };
+
+                // Act
+                var result = calculator.convertDistance();
+
+                // Assert
+                Assert.AreEqual(10, result);
+            }
+
+            [Test]
+            public void SustainabilityWeighting_CalculatesCorrectlyForPetrol()
+            {
+                // Arrange
+                var calculator = new Calculator.Calculator
+                {
+                    distance = 10,
+                    milesOrKms = DistanceMeasurement.miles,
+                    numDays = 3,
+                    transportMode = TransportModes.petrol
+                };
+
+                // Act
+                var result = calculator.sustainabilityWeighting;
+
+                // Assert
+                Assert.AreEqual(480, result);
+            }
+
         }
     }
 }
