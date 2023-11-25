@@ -405,6 +405,82 @@ namespace Calculator.Tests
             Assert.AreEqual(800, result, "Sustainability weighting calculation for petrol is incorrect");
         }
 
-        // Add similar tests for other transport modes...
+        [Test]
+        public void OnGet_DoesNotThrowException()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<IndexModel>>();
+            var indexModel = new IndexModel(loggerMock.Object);
+
+            // Act & Assert
+            Assert.DoesNotThrow(() => indexModel.OnGet(), "OnGet should not throw an exception");
+        }
+
+
+    }
+}
+
+
+
+namespace MyJourneyToWork.Tests
+{
+    [TestFixture]
+    public class CalculatorTests
+    {
+        [Test]
+        public void ConvertDistance_WhenInMiles_ReturnsSameDistance()
+        {
+            // Arrange
+            var calculator = new Calculator.Calculator
+            {
+                distance = 20,
+                milesOrKms = DistanceMeasurement.miles
+            };
+
+            // Act
+            var convertedDistance = calculator.convertDistance();
+
+            // Assert
+            Assert.AreEqual(20, convertedDistance);
+        }
+
+        [Test]
+        public void ConvertDistance_WhenInKilometers_ReturnsConvertedDistance()
+        {
+            // Arrange
+            var calculator = new Calculator.Calculator
+            {
+                distance = 20,
+                milesOrKms = DistanceMeasurement.kms
+            };
+
+            // Act
+            var convertedDistance = calculator.convertDistance();
+
+            // Assert
+            Assert.AreEqual(20 / 1.609344, convertedDistance, 0.0001);
+        }
+
+        [Test]
+        public void SustainabilityWeighting_CalculatesCorrectly()
+        {
+            // Arrange
+            var calculator = new Calculator.Calculator
+            {
+                distance = 20,
+                milesOrKms = DistanceMeasurement.miles,
+                numDays = 3,
+                transportMode = TransportModes.petrol
+            };
+
+            // Act
+            var sustainabilityWeighting = calculator.sustainabilityWeighting;
+
+            // Assert
+            // You should calculate the expected result based on the formula in the Calculator class
+            Assert.AreEqual(20 * 8 * 3 * 2, sustainabilityWeighting);
+        }
+
+        // Add more tests for edge cases, invalid inputs, and other scenarios as needed
     }
 }
