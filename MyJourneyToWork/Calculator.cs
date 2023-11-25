@@ -61,6 +61,7 @@ namespace Calculator
                 return this.distance;
         }
 
+
         // calculate sustainability number
         [DisplayName("Your Sustainability Weighting:")]
         public double sustainabilityWeighting
@@ -114,6 +115,7 @@ namespace Calculator
                 {
                     total = transportModeWeighting[(int)TransportModes.walking] * convertDistance() * (this.numDays * 2);
                 }
+
                 return total;
             }
         }

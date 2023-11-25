@@ -1,4 +1,6 @@
 ﻿@page
+@using Newtonsoft.Json
+@inject IHttpContextAccessor HttpContextAccessor
 @model MyJourneyToWork.Pages.CalculatorModel
 @{
     ViewData["Title"] = "Calculate my journey to work:";
@@ -61,5 +63,16 @@
                 </div>
             }
         </form>
+        <h4>Calculation History</h4>
+        <ul>
+            @{
+                var history = HttpContextAccessor.HttpContext.Session.GetString("CalculationHistory");
+                var historyList = history != null ? JsonConvert.DeserializeObject<List<double>>(history) : new List<double>();
+                foreach (var item in historyList)
+                {
+                    <li>@item</li>
+                }
+            }
+        </ul>
     </div>
 </div>

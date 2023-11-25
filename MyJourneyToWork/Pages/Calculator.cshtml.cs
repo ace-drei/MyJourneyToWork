@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 
 namespace MyJourneyToWork.Pages
 {
@@ -10,6 +11,29 @@ namespace MyJourneyToWork.Pages
 
         public void OnGet()
         {
+        }
+
+        public void OnPost()
+        {
+            if (ModelState.IsValid)
+            {
+                SaveCalculationHistory();
+                // Rest of your code...
+            }
+        }
+
+        private void SaveCalculationHistory()
+        {
+            var history = HttpContext.Session.GetString("CalculationHistory");
+            var historyList = history != null ? JsonConvert.DeserializeObject<List<double>>(history) : new List<double>();
+            historyList.Add(calculator.sustainabilityWeighting);
+            HttpContext.Session.SetString("CalculationHistory", JsonConvert.SerializeObject(historyList));
+        }
+
+        public List<double> GetCalculationHistory()
+        {
+            var history = HttpContext.Session.GetString("CalculationHistory");
+            return history != null ? JsonConvert.DeserializeObject<List<double>>(history) : new List<double>();
         }
     }
 }
