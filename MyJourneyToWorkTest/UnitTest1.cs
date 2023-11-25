@@ -1,6 +1,18 @@
 using Calculator;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyJourneyToWork.Pages;
+using System.Reflection;
+using NUnit.Framework;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using NUnit.Framework;
+using Microsoft.Extensions.Logging;
+using NUnit.Framework;
+using Moq;
 
 namespace MyJourneyToWorkTest
 {
@@ -250,8 +262,47 @@ namespace MyJourneyToWorkTest
             Assert.AreEqual(0.005 * 5 * (7 * 2), result);
         }
 
+        //test for Privacy.cshtml.cs
+        //program class
 
 
 
+
+    }
+}
+
+//test for Privacy.cshtml.cs
+
+namespace MyJourneyToWorkTest
+{
+    [TestFixture]
+    public class PrivacyModelTests
+    {
+        [Test]
+        public void PrivacyModel_Constructor_ShouldSetLogger()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<PrivacyModel>>();
+
+            // Act
+            var privacyModel = new PrivacyModel(loggerMock.Object);
+
+            // Assert
+            Assert.IsNotNull(privacyModel);
+            Assert.IsNotNull(loggerMock.Object);
+
+            // You can add additional assertions if needed
+        }
+
+        [Test]
+        public void OnGet_ShouldNotThrowExceptions()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<PrivacyModel>>();
+            var privacyModel = new PrivacyModel(loggerMock.Object);
+
+            // Act and Assert
+            Assert.DoesNotThrow(() => privacyModel.OnGet());
+        }
     }
 }
