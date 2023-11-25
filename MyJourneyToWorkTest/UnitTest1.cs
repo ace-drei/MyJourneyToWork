@@ -301,6 +301,7 @@ namespace MyJourneyToWorkTest
     [TestFixture]
     public class ErrorModelTests
     {
+
         [Test]
         public void ShowRequestId_NotNullOrEmpty_ReturnsTrue()
         {
@@ -327,6 +328,29 @@ namespace MyJourneyToWorkTest
 
             // Assert
             Assert.IsFalse(errorModel.ShowRequestId);
+        }
+        [Test]
+        public void OnGet_SetsRequestIdFromHttpContext()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<ErrorModel>>();
+            var httpContextMock = new Mock<HttpContext>();
+            var traceIdentifier = "testTraceIdentifier";
+            httpContextMock.Setup(c => c.TraceIdentifier).Returns(traceIdentifier);
+
+            var errorModel = new ErrorModel(loggerMock.Object)
+            {
+                PageContext = new PageContext
+                {
+                    HttpContext = httpContextMock.Object
+                }
+            };
+
+            // Act
+            errorModel.OnGet();
+
+            // Assert
+            Assert.AreEqual(traceIdentifier, errorModel.RequestId);
         }
 
     }
@@ -510,18 +534,24 @@ namespace MyJourneyToWork.Tests
         [Test]
         public void RetrieveEmptyCalculationHistory_Test()
         {
-            // Arrange
-            // No calculation added to history
 
-            // Act
             var history = _calculatorModel.GetCalculationHistory();
 
-            // Assert
+
             Assert.IsNotNull(history);
             Assert.IsEmpty(history);
         }
 
+        [Test]
+        public void OnGet_InitializesDataCorrectly()
+        {
 
+            var model = new CalculatorModel();
+
+
+            model.OnGet();
+
+        }
     }
     }
 
