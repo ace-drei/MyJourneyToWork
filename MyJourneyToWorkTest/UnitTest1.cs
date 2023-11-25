@@ -306,3 +306,105 @@ namespace MyJourneyToWorkTest
         }
     }
 }
+
+//error 
+
+
+
+namespace MyJourneyToWorkTest.Pages
+{
+    [TestFixture]
+    public class ErrorModelTests
+    {
+        [Test]
+        public void ShowRequestId_NotNullOrEmpty_ReturnsTrue()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<ErrorModel>>();
+            var errorModel = new ErrorModel(loggerMock.Object);
+
+            // Act
+            errorModel.RequestId = "someRequestId";
+
+            // Assert
+            Assert.IsTrue(errorModel.ShowRequestId);
+        }
+
+        [Test]
+        public void ShowRequestId_NullOrEmpty_ReturnsFalse()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger<ErrorModel>>();
+            var errorModel = new ErrorModel(loggerMock.Object);
+
+            // Act
+            errorModel.RequestId = null;
+
+            // Assert
+            Assert.IsFalse(errorModel.ShowRequestId);
+        }
+
+        // Add more tests as needed for other methods or properties in ErrorModel
+    }
+
+}
+
+
+
+////////
+
+
+
+namespace Calculator.Tests
+{
+    [TestFixture]
+    public class CalculatorTests
+    {
+        [Test]
+        public void ConvertDistance_ConvertsMilesToMiles()
+        {
+            // Arrange
+            var calculator = new Calculator { distance = 10, milesOrKms = DistanceMeasurement.miles };
+
+            // Act
+            var result = calculator.convertDistance();
+
+            // Assert
+            Assert.AreEqual(10, result, "Conversion from miles to miles should result in the same value");
+        }
+
+        [Test]
+        public void ConvertDistance_ConvertsKilometersToMiles()
+        {
+            // Arrange
+            var calculator = new Calculator { distance = 10, milesOrKms = DistanceMeasurement.kms };
+
+            // Act
+            var result = calculator.convertDistance();
+
+            // Assert
+            Assert.AreEqual(6.21371, result, 0.00001, "Conversion from kilometers to miles is incorrect");
+        }
+
+        [Test]
+        public void SustainabilityWeighting_CalculatesCorrectlyForPetrol()
+        {
+            // Arrange
+            var calculator = new Calculator
+            {
+                distance = 10,
+                milesOrKms = DistanceMeasurement.miles,
+                numDays = 5,
+                transportMode = TransportModes.petrol
+            };
+
+            // Act
+            var result = calculator.sustainabilityWeighting;
+
+            // Assert
+            Assert.AreEqual(800, result, "Sustainability weighting calculation for petrol is incorrect");
+        }
+
+        // Add similar tests for other transport modes...
+    }
+}
