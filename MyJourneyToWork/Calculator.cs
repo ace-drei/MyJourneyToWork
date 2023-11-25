@@ -52,7 +52,7 @@ namespace Calculator
         [DisplayName("Select A Transport mode:")]
         public TransportModes transportMode { get; set; }
 
-        //Ensure that distance is in miles for calculation
+
         public double convertDistance()
         {
             if (milesOrKms.Equals(DistanceMeasurement.kms))
@@ -62,11 +62,11 @@ namespace Calculator
         }
 
 
-        // calculate sustainability number
+
         [DisplayName("Your Sustainability Weighting:")]
         public double sustainabilityWeighting
         {
-            // Total =  (Transport method Weighting * distance to work (in miles) * (onsite num Days per week*2))
+
             get
             {
                 double total = 0;

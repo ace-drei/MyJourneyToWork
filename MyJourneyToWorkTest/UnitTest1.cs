@@ -13,6 +13,10 @@ using NUnit.Framework;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using Moq;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using Microsoft.AspNetCore.Routing;
+
 
 namespace MyJourneyToWorkTest
 {
@@ -261,20 +265,8 @@ namespace MyJourneyToWorkTest
             // Assert
             Assert.AreEqual(0.005 * 5 * (7 * 2), result);
         }
-
-        //test for Privacy.cshtml.cs
-        //program class
-
-
-
-
     }
-}
 
-//test for Privacy.cshtml.cs
-
-namespace MyJourneyToWorkTest
-{
     [TestFixture]
     public class PrivacyModelTests
     {
@@ -305,14 +297,7 @@ namespace MyJourneyToWorkTest
             Assert.DoesNotThrow(() => privacyModel.OnGet());
         }
     }
-}
 
-//error 
-
-
-
-namespace MyJourneyToWorkTest.Pages
-{
     [TestFixture]
     public class ErrorModelTests
     {
@@ -344,13 +329,8 @@ namespace MyJourneyToWorkTest.Pages
             Assert.IsFalse(errorModel.ShowRequestId);
         }
 
-        // Add more tests as needed for other methods or properties in ErrorModel
     }
 
-}
-
-namespace Calculator.Tests
-{
     [TestFixture]
     public class CalculatorTests
     {
@@ -358,7 +338,7 @@ namespace Calculator.Tests
         public void ConvertDistance_ConvertsMilesToMiles()
         {
             // Arrange
-            var calculator = new Calculator { distance = 10, milesOrKms = DistanceMeasurement.miles };
+            var calculator = new Calculator.Calculator { distance = 10, milesOrKms = DistanceMeasurement.miles };
 
             // Act
             var result = calculator.convertDistance();
@@ -371,7 +351,7 @@ namespace Calculator.Tests
         public void ConvertDistance_ConvertsKilometersToMiles()
         {
 
-            var calculator = new Calculator { distance = 10, milesOrKms = DistanceMeasurement.kms };
+            var calculator = new Calculator.Calculator { distance = 10, milesOrKms = DistanceMeasurement.kms };
 
 
             var result = calculator.convertDistance();
@@ -384,7 +364,7 @@ namespace Calculator.Tests
         public void SustainabilityWeighting_CalculatesCorrectlyForPetrol()
         {
 
-            var calculator = new Calculator
+            var calculator = new Calculator.Calculator
             {
                 distance = 10,
                 milesOrKms = DistanceMeasurement.miles,
@@ -392,10 +372,10 @@ namespace Calculator.Tests
                 transportMode = TransportModes.petrol
             };
 
-            // Act
+            
             var result = calculator.sustainabilityWeighting;
 
-            // Assert
+            
             Assert.AreEqual(800, result, "Sustainability weighting calculation for petrol is incorrect");
         }
 
@@ -470,5 +450,78 @@ namespace MyJourneyToWork.Tests
                   Assert.AreEqual(20 * 8 * 3 * 2, sustainabilityWeighting);
         }
 
+
+
    }
-}
+
+    public class CalculatorModelTests
+    {
+        private CalculatorModel _calculatorModel;
+        private Mock<ISession> _session;
+        private Dictionary<string, byte[]> _sessionStorage;
+
+        [SetUp]
+        public void Setup()
+        {
+            _sessionStorage = new Dictionary<string, byte[]>();
+            _session = new Mock<ISession>();
+
+            _session.Setup(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()))
+                    .Callback<string, byte[]>((key, value) => _sessionStorage[key] = value);
+
+            _session.Setup(s => s.TryGetValue(It.IsAny<string>(), out It.Ref<byte[]>.IsAny))
+                    .Returns((string key, out byte[] value) =>
+                    {
+                        value = _sessionStorage.ContainsKey(key) ? _sessionStorage[key] : null;
+                        return _sessionStorage.ContainsKey(key);
+                    });
+
+            var context = new DefaultHttpContext { Session = _session.Object };
+            var pageContext = new PageContext(new ActionContext
+            {
+                HttpContext = context,
+                RouteData = new RouteData(),
+                ActionDescriptor = new PageActionDescriptor()
+            });
+
+            _calculatorModel = new CalculatorModel
+            {
+                PageContext = pageContext,
+                calculator = new Calculator.Calculator() 
+            };
+        }
+
+        [Test]
+        public void AddCalculationToHistory_Test()
+        {
+            
+            _calculatorModel.calculator.distance = 10;
+            _calculatorModel.calculator.numDays = 5;
+            _calculatorModel.calculator.transportMode = Calculator.TransportModes.petrol;
+
+            
+            _calculatorModel.OnPost(); 
+
+           
+            _session.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Once);
+            Assert.IsTrue(_sessionStorage.ContainsKey("CalculationHistory"));
+        }
+
+        [Test]
+        public void RetrieveEmptyCalculationHistory_Test()
+        {
+            // Arrange
+            // No calculation added to history
+
+            // Act
+            var history = _calculatorModel.GetCalculationHistory();
+
+            // Assert
+            Assert.IsNotNull(history);
+            Assert.IsEmpty(history);
+        }
+
+
+    }
+    }
+

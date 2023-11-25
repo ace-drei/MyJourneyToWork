@@ -6,7 +6,7 @@ namespace MyJourneyToWork.Pages
 {
     public class CalculatorModel : PageModel
     {
-        [BindProperty]      // bound on POST request
+        [BindProperty]      
         public Calculator.Calculator calculator { get; set; }
 
         public void OnGet()
@@ -18,11 +18,11 @@ namespace MyJourneyToWork.Pages
             if (ModelState.IsValid)
             {
                 SaveCalculationHistory();
-                // Rest of your code...
+
             }
         }
 
-        private void SaveCalculationHistory()
+        public void SaveCalculationHistory()
         {
             var history = HttpContext.Session.GetString("CalculationHistory");
             var historyList = history != null ? JsonConvert.DeserializeObject<List<double>>(history) : new List<double>();
