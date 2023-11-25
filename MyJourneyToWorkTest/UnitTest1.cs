@@ -349,12 +349,6 @@ namespace MyJourneyToWorkTest.Pages
 
 }
 
-
-
-////////
-
-
-
 namespace Calculator.Tests
 {
     [TestFixture]
@@ -376,20 +370,20 @@ namespace Calculator.Tests
         [Test]
         public void ConvertDistance_ConvertsKilometersToMiles()
         {
-            // Arrange
+
             var calculator = new Calculator { distance = 10, milesOrKms = DistanceMeasurement.kms };
 
-            // Act
+
             var result = calculator.convertDistance();
 
-            // Assert
+
             Assert.AreEqual(6.21371, result, 0.00001, "Conversion from kilometers to miles is incorrect");
         }
 
         [Test]
         public void SustainabilityWeighting_CalculatesCorrectlyForPetrol()
         {
-            // Arrange
+
             var calculator = new Calculator
             {
                 distance = 10,
@@ -408,19 +402,17 @@ namespace Calculator.Tests
         [Test]
         public void OnGet_DoesNotThrowException()
         {
-            // Arrange
+
             var loggerMock = new Mock<ILogger<IndexModel>>();
             var indexModel = new IndexModel(loggerMock.Object);
 
-            // Act & Assert
+
             Assert.DoesNotThrow(() => indexModel.OnGet(), "OnGet should not throw an exception");
         }
 
 
     }
 }
-
-
 
 namespace MyJourneyToWork.Tests
 {
@@ -430,41 +422,40 @@ namespace MyJourneyToWork.Tests
         [Test]
         public void ConvertDistance_WhenInMiles_ReturnsSameDistance()
         {
-            // Arrange
+
             var calculator = new Calculator.Calculator
             {
                 distance = 20,
                 milesOrKms = DistanceMeasurement.miles
             };
 
-            // Act
+
             var convertedDistance = calculator.convertDistance();
 
-            // Assert
+
             Assert.AreEqual(20, convertedDistance);
         }
 
         [Test]
         public void ConvertDistance_WhenInKilometers_ReturnsConvertedDistance()
         {
-            // Arrange
+
             var calculator = new Calculator.Calculator
             {
                 distance = 20,
                 milesOrKms = DistanceMeasurement.kms
             };
 
-            // Act
             var convertedDistance = calculator.convertDistance();
 
-            // Assert
+
             Assert.AreEqual(20 / 1.609344, convertedDistance, 0.0001);
         }
 
         [Test]
         public void SustainabilityWeighting_CalculatesCorrectly()
         {
-            // Arrange
+
             var calculator = new Calculator.Calculator
             {
                 distance = 20,
@@ -473,14 +464,11 @@ namespace MyJourneyToWork.Tests
                 transportMode = TransportModes.petrol
             };
 
-            // Act
+
             var sustainabilityWeighting = calculator.sustainabilityWeighting;
 
-            // Assert
-            // You should calculate the expected result based on the formula in the Calculator class
-            Assert.AreEqual(20 * 8 * 3 * 2, sustainabilityWeighting);
+                  Assert.AreEqual(20 * 8 * 3 * 2, sustainabilityWeighting);
         }
 
-        // Add more tests for edge cases, invalid inputs, and other scenarios as needed
-    }
+   }
 }
