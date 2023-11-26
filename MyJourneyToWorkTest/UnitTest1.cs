@@ -273,7 +273,6 @@ namespace MyJourneyToWorkTest
             Assert.IsNotNull(privacyModel);
             Assert.IsNotNull(loggerMock.Object);
 
-            // You can add additional assertions if needed
         }
 
         [Test]
@@ -386,10 +385,10 @@ namespace MyJourneyToWorkTest
                 transportMode = TransportModes.petrol
             };
 
-            
+
             var result = calculator.sustainabilityWeighting;
 
-            
+
             Assert.AreEqual(800, result, "Sustainability weighting calculation for petrol is incorrect");
         }
 
@@ -404,144 +403,139 @@ namespace MyJourneyToWorkTest
             Assert.DoesNotThrow(() => indexModel.OnGet(), "OnGet should not throw an exception");
         }
 
+        [TestFixture]
+        public class CalculatorTests1
+        {
+            [Test]
+            public void ConvertDistance_WhenInMiles_ReturnsSameDistance()
+            {
 
+                var calculator = new Calculator.Calculator
+                {
+                    distance = 20,
+                    milesOrKms = DistanceMeasurement.miles
+                };
+
+
+                var convertedDistance = calculator.convertDistance();
+
+
+                Assert.AreEqual(20, convertedDistance);
+            }
+
+            [Test]
+            public void ConvertDistance_WhenInKilometers_ReturnsConvertedDistance()
+            {
+
+                var calculator = new Calculator.Calculator
+                {
+                    distance = 20,
+                    milesOrKms = DistanceMeasurement.kms
+                };
+
+                var convertedDistance = calculator.convertDistance();
+
+
+                Assert.AreEqual(20 / 1.609344, convertedDistance, 0.0001);
+            }
+
+            [Test]
+            public void SustainabilityWeighting_CalculatesCorrectly()
+            {
+
+                var calculator = new Calculator.Calculator
+                {
+                    distance = 20,
+                    milesOrKms = DistanceMeasurement.miles,
+                    numDays = 3,
+                    transportMode = TransportModes.petrol
+                };
+
+
+                var sustainabilityWeighting = calculator.sustainabilityWeighting;
+
+                Assert.AreEqual(20 * 8 * 3 * 2, sustainabilityWeighting);
+            }
+
+
+
+        }
+
+        public class CalculatorModelTests
+        {
+            private CalculatorModel _calculatorModel;
+            private Mock<ISession> _session;
+            private Dictionary<string, byte[]> _sessionStorage;
+
+            [SetUp]
+            public void Setup()
+            {
+                _sessionStorage = new Dictionary<string, byte[]>();
+                _session = new Mock<ISession>();
+
+                _session.Setup(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()))
+                        .Callback<string, byte[]>((key, value) => _sessionStorage[key] = value);
+
+                _session.Setup(s => s.TryGetValue(It.IsAny<string>(), out It.Ref<byte[]>.IsAny))
+                        .Returns((string key, out byte[] value) =>
+                        {
+                            value = _sessionStorage.ContainsKey(key) ? _sessionStorage[key] : null;
+                            return _sessionStorage.ContainsKey(key);
+                        });
+
+                var context = new DefaultHttpContext { Session = _session.Object };
+                var pageContext = new PageContext(new ActionContext
+                {
+                    HttpContext = context,
+                    RouteData = new RouteData(),
+                    ActionDescriptor = new PageActionDescriptor()
+                });
+
+                _calculatorModel = new CalculatorModel
+                {
+                    PageContext = pageContext,
+                    calculator = new Calculator.Calculator()
+                };
+            }
+
+            [Test]
+            public void AddCalculationToHistory_Test()
+            {
+
+                _calculatorModel.calculator.distance = 10;
+                _calculatorModel.calculator.numDays = 5;
+                _calculatorModel.calculator.transportMode = Calculator.TransportModes.petrol;
+
+
+                _calculatorModel.OnPost();
+
+
+                _session.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Once);
+                Assert.IsTrue(_sessionStorage.ContainsKey("CalculationHistory"));
+            }
+
+            [Test]
+            public void RetrieveEmptyCalculationHistory_Test()
+            {
+
+                var history = _calculatorModel.GetCalculationHistory();
+
+
+                Assert.IsNotNull(history);
+                Assert.IsEmpty(history);
+            }
+
+            [Test]
+            public void OnGet_InitializesDataCorrectly()
+            {
+
+                var model = new CalculatorModel();
+
+
+                model.OnGet();
+
+            }
+        }
     }
 }
-
-namespace MyJourneyToWork.Tests
-{
-    [TestFixture]
-    public class CalculatorTests
-    {
-        [Test]
-        public void ConvertDistance_WhenInMiles_ReturnsSameDistance()
-        {
-
-            var calculator = new Calculator.Calculator
-            {
-                distance = 20,
-                milesOrKms = DistanceMeasurement.miles
-            };
-
-
-            var convertedDistance = calculator.convertDistance();
-
-
-            Assert.AreEqual(20, convertedDistance);
-        }
-
-        [Test]
-        public void ConvertDistance_WhenInKilometers_ReturnsConvertedDistance()
-        {
-
-            var calculator = new Calculator.Calculator
-            {
-                distance = 20,
-                milesOrKms = DistanceMeasurement.kms
-            };
-
-            var convertedDistance = calculator.convertDistance();
-
-
-            Assert.AreEqual(20 / 1.609344, convertedDistance, 0.0001);
-        }
-
-        [Test]
-        public void SustainabilityWeighting_CalculatesCorrectly()
-        {
-
-            var calculator = new Calculator.Calculator
-            {
-                distance = 20,
-                milesOrKms = DistanceMeasurement.miles,
-                numDays = 3,
-                transportMode = TransportModes.petrol
-            };
-
-
-            var sustainabilityWeighting = calculator.sustainabilityWeighting;
-
-                  Assert.AreEqual(20 * 8 * 3 * 2, sustainabilityWeighting);
-        }
-
-
-
-   }
-
-    public class CalculatorModelTests
-    {
-        private CalculatorModel _calculatorModel;
-        private Mock<ISession> _session;
-        private Dictionary<string, byte[]> _sessionStorage;
-
-        [SetUp]
-        public void Setup()
-        {
-            _sessionStorage = new Dictionary<string, byte[]>();
-            _session = new Mock<ISession>();
-
-            _session.Setup(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()))
-                    .Callback<string, byte[]>((key, value) => _sessionStorage[key] = value);
-
-            _session.Setup(s => s.TryGetValue(It.IsAny<string>(), out It.Ref<byte[]>.IsAny))
-                    .Returns((string key, out byte[] value) =>
-                    {
-                        value = _sessionStorage.ContainsKey(key) ? _sessionStorage[key] : null;
-                        return _sessionStorage.ContainsKey(key);
-                    });
-
-            var context = new DefaultHttpContext { Session = _session.Object };
-            var pageContext = new PageContext(new ActionContext
-            {
-                HttpContext = context,
-                RouteData = new RouteData(),
-                ActionDescriptor = new PageActionDescriptor()
-            });
-
-            _calculatorModel = new CalculatorModel
-            {
-                PageContext = pageContext,
-                calculator = new Calculator.Calculator() 
-            };
-        }
-
-        [Test]
-        public void AddCalculationToHistory_Test()
-        {
-            
-            _calculatorModel.calculator.distance = 10;
-            _calculatorModel.calculator.numDays = 5;
-            _calculatorModel.calculator.transportMode = Calculator.TransportModes.petrol;
-
-            
-            _calculatorModel.OnPost(); 
-
-           
-            _session.Verify(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()), Times.Once);
-            Assert.IsTrue(_sessionStorage.ContainsKey("CalculationHistory"));
-        }
-
-        [Test]
-        public void RetrieveEmptyCalculationHistory_Test()
-        {
-
-            var history = _calculatorModel.GetCalculationHistory();
-
-
-            Assert.IsNotNull(history);
-            Assert.IsEmpty(history);
-        }
-
-        [Test]
-        public void OnGet_InitializesDataCorrectly()
-        {
-
-            var model = new CalculatorModel();
-
-
-            model.OnGet();
-
-        }
-    }
-    }
 
