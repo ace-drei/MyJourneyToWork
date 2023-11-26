@@ -1,21 +1,11 @@
 using Calculator;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyJourneyToWork.Pages;
-using System.Reflection;
-using NUnit.Framework;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NUnit.Framework;
-using Microsoft.Extensions.Logging;
-using NUnit.Framework;
-using Moq;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
+using Moq;
+using MyJourneyToWork.Pages;
 
 
 namespace MyJourneyToWorkTest
