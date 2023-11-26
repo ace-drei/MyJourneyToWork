@@ -62,7 +62,6 @@ namespace Calculator
         }
 
 
-
         [DisplayName("Your Sustainability Weighting:")]
         public double sustainabilityWeighting
         {
