@@ -18,7 +18,7 @@ jobs:
       - name: Run local k6 test
         uses: grafana/k6-action@v0.2.0
         with:
-          filename: PerformanceTesting\performanceTests.js
+          filename: performanceTests.js
   build:
     name: Build and analyze
     runs-on: windows-latest
