@@ -18,7 +18,6 @@ namespace MyJourneyToWork.Pages
             if (ModelState.IsValid)
             {
                 SaveCalculationHistory();
-
             }
         }
 

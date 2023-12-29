@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using MyJourneyToWork.Pages;
 
-
 namespace MyJourneyToWorkTest
 {
     public class Tests
@@ -16,17 +15,16 @@ namespace MyJourneyToWorkTest
         [Test]
         public void ConvertDistance_ConvertsKilometersToMiles()
         {
-            // Arrange
+
             var calculator = new Calculator.Calculator
             {
                 distance = 160.9344, // 100 kilometers
                 milesOrKms = DistanceMeasurement.kms
             };
 
-            // Act
             var result = calculator.convertDistance();
 
-            // Assert
+
             Assert.AreEqual(100, result);
         }
 
@@ -312,16 +310,15 @@ namespace MyJourneyToWorkTest
             var loggerMock = new Mock<ILogger<ErrorModel>>();
             var errorModel = new ErrorModel(loggerMock.Object);
 
-            // Act
+
             errorModel.RequestId = null;
 
-            // Assert
             Assert.IsFalse(errorModel.ShowRequestId);
         }
         [Test]
         public void OnGet_SetsRequestIdFromHttpContext()
         {
-            // Arrange
+
             var loggerMock = new Mock<ILogger<ErrorModel>>();
             var httpContextMock = new Mock<HttpContext>();
             var traceIdentifier = "testTraceIdentifier";
@@ -335,10 +332,8 @@ namespace MyJourneyToWorkTest
                 }
             };
 
-            // Act
             errorModel.OnGet();
 
-            // Assert
             Assert.AreEqual(traceIdentifier, errorModel.RequestId);
         }
 
@@ -350,13 +345,11 @@ namespace MyJourneyToWorkTest
         [Test]
         public void ConvertDistance_ConvertsMilesToMiles()
         {
-            // Arrange
+
             var calculator = new Calculator.Calculator { distance = 10, milesOrKms = DistanceMeasurement.miles };
 
-            // Act
             var result = calculator.convertDistance();
 
-            // Assert
             Assert.AreEqual(10, result, "Conversion from miles to miles should result in the same value");
         }
 

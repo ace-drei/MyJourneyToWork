@@ -55,3 +55,29 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_576B1447F30B4CF6A613484D707D1065 }}
           package: .
+  e2e-test:
+    runs-on: windows-latest
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.x'
+          include-prerelease: true
+
+      - name: Navigate to Playwright Tests directory
+        run: cd PlaywrightTests
+
+      - name: Add Playwright NUnit package
+        run: dotnet add package Microsoft.Playwright.NUnit
+
+      - name: Build Playwright Tests
+        run: dotnet build
+
+      - name: Install Playwright
+        run: pwsh bin/Debug/net7.0/playwright.ps1 install
+
+      - name: Run Playwright Tests
+        run: dotnet test -- NUnit.NumberOfTestWorkers=5
