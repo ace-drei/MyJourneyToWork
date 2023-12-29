@@ -70,9 +70,6 @@ jobs:
       - name: Navigate to Playwright Tests directory
         run: cd PlaywrightTests
 
-      - name: Add Playwright NUnit package
-        run: dotnet add package Microsoft.Playwright.NUnit
-
       - name: Build Playwright Tests
         run: dotnet build
 
