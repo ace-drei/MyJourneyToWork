@@ -74,7 +74,7 @@ jobs:
         run: dotnet build
 
       - name: Install Playwright
-        run: pwsh bin/Debug/net7.0/playwright.ps1 install
+        run: bin/Debug/net7.0/playwright.ps1 install
 
       - name: Run Playwright Tests
         run: dotnet test -- NUnit.NumberOfTestWorkers=5
