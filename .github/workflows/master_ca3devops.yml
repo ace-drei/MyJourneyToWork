@@ -70,11 +70,14 @@ jobs:
       - name: Navigate to Playwright Tests directory
         run: cd PlaywrightTests
 
+      - name: Add Playwright NUnit package
+        run: dotnet add package Microsoft.Playwright.NUnit
+
       - name: Build Playwright Tests
         run: dotnet build
 
       - name: Install Playwright
-        run: bin/Debug/net7.0/playwright.ps1 install
+        run: pwsh bin/Debug/net7.0/playwright.ps1 install
 
       - name: Run Playwright Tests
         run: dotnet test -- NUnit.NumberOfTestWorkers=5
