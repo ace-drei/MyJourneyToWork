@@ -34,7 +34,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-  deploy:
+  deployToProduction:
     runs-on: windows-latest
     needs: build
     environment:
@@ -55,9 +55,33 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_576B1447F30B4CF6A613484D707D1065 }}
           package: .
+
+  
+  DeployToQA:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'QA'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+
+      - name: Deploy to QA
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Ca3DevOps'
+          slot-name: 'QA'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_QA }}
+          package: .
+
   e2e_tests:
     runs-on: windows-latest
-    needs: deploy
+    needs: DeployToQA
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -77,3 +101,25 @@ jobs:
 
       - name: Run Playwright Tests
         run: dotnet test -- NUnit.NumberOfTestWorkers=5
+
+  DeployToStaging:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'staging'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
+
+      - name: Deploy to Staging
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Ca3DevOps'
+          slot-name: 'Staging'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
+          package: .
