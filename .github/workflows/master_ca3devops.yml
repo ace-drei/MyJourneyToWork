@@ -73,9 +73,7 @@ jobs:
           cd PlaywrightTests
           dotnet add package Microsoft.Playwright.NUnit
           dotnet build
-
-      - name: Install Playwright browsers
-        run: pwsh bin/Debug/net7.0/playwright.ps1 install
+          pwsh bin/Debug/net7.0/playwright.ps1 install
 
       - name: Run Playwright Tests
         run: dotnet test -- NUnit.NumberOfTestWorkers=5
