@@ -11,7 +11,7 @@ export const options = {
   };
 
 export default function () {
-  let res = http.get('https://ca3devops.azurewebsites.net/', {tags: {name: 'Homepage'}});
+  let res = http.get('https://ca3devops-qa.azurewebsites.net/', {tags: {name: 'Homepage'}});
   check(res, {
     'is status 200': (r) => r.status === 200,
     'text verification': (r) => r.body.includes('Welcome'),

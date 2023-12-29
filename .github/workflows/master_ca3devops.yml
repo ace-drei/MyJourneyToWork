@@ -102,6 +102,54 @@ jobs:
       - name: Run Playwright Tests
         run: dotnet test -- NUnit.NumberOfTestWorkers=5
 
+  k6_load_test:
+    name: k6 Load Test
+    runs-on: ubuntu-latest
+    needs: DeployToQA
+  
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+  
+      - name: Run local k6 test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: PerformanceTesting/loadTest.js
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+
+  k6_spike_test:
+    name: k6 Spike Test
+    runs-on: ubuntu-latest
+    needs: DeployToQA
+  
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+  
+      - name: Run local k6 test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: PerformanceTesting/spikeTest.js
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+          
+  k6_stress_test:
+    name: k6 Stress Test
+    runs-on: ubuntu-latest
+    needs: DeployToQA
+  
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+  
+      - name: Run local k6 test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: PerformanceTesting/stressTest.js
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+
   DeployToStaging:
     runs-on: windows-latest
     needs: build
