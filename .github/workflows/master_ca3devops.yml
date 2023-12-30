@@ -36,7 +36,7 @@ jobs:
 
   deployToProduction:
     runs-on: windows-latest
-    needs: build
+    needs: DeployToStaging
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -56,16 +56,23 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_576B1447F30B4CF6A613484D707D1065 }}
           package: .
 
-
-  deployToQA:
+  
+  DeployToQA:
     runs-on: windows-latest
     needs: build
-    environment: QA
+    environment:
+      name: 'QA'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
         with:
           name: .net-app
-      - uses: azure/webapps-deploy@v2
+
+      - name: Deploy to QA
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'Ca3DevOps'
           slot-name: 'QA'
@@ -145,17 +152,15 @@ jobs:
 
   DeployToStaging:
     runs-on: windows-latest
-    needs: build
+    needs: k6_stress_test
     environment:
       name: 'staging'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
           name: .net-app
-
       - name: Deploy to Staging
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
