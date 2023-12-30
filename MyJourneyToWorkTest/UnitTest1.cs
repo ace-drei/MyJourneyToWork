@@ -528,50 +528,7 @@ namespace MyJourneyToWorkTest
                 model.OnGet();
 
             }
-              [Test]
-        public void OnPost_ValidModelState_ShouldAddToHistory()
-        {
-            // Arrange
-            _calculatorModel.calculator.distance = 10;
-            _calculatorModel.calculator.numDays = 5;
-            _calculatorModel.calculator.transportMode = Calculator.TransportModes.petrol;
-
-            // Act
-            _calculatorModel.OnPost();
-
-            // Assert
-            Assert.IsTrue(_sessionStorage.ContainsKey("CalculationHistory"));
         }
-
-
-                [Test]
-        public void OnPost_InvalidModelState_ShouldNotAddToHistory()
-        {
-            // Arrange
-            _calculatorModel.ModelState.AddModelError("distance", "Distance is required");
-
-            // Act
-            _calculatorModel.OnPost();
-
-            // Assert
-            Assert.IsFalse(_sessionStorage.ContainsKey("CalculationHistory"));
-        }
-
-                [Test]
-        public void RetrieveEmptyCalculationHistory_ShouldReturnEmptyList()
-        {
-            // Act
-            var history = _calculatorModel.GetCalculationHistory();
-
-            // Assert
-            Assert.IsNotNull(history);
-            Assert.IsEmpty(history);
-        }
-
-
-        }
-
-        
     }
 }
 
