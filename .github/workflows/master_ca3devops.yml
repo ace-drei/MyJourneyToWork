@@ -57,6 +57,8 @@ jobs:
           package: .
 
   
+
+  
   DeployToQA:
     runs-on: windows-latest
     needs: build
@@ -168,3 +170,24 @@ jobs:
           slot-name: 'Staging'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
           package: .
+
+  swap-to-green-slot:
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: deployToProduction
+    steps:
+        
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@main
+  
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+                
+      - name: "Swap to green slot"
+        uses: Azure/cli@v1
+        with:
+          inlineScript: |
+            az webapp deployment slot swap --slot 'staging' --resource-group ca3 --name Ca3DevOps
+      
