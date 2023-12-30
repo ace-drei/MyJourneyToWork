@@ -56,23 +56,16 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_576B1447F30B4CF6A613484D707D1065 }}
           package: .
 
-  
-  DeployToQA:
+
+  deployToQA:
     runs-on: windows-latest
     needs: build
-    environment:
-      name: 'QA'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    environment: QA
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: .net-app
-
-      - name: Deploy to QA
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+      - uses: azure/webapps-deploy@v2
         with:
           app-name: 'Ca3DevOps'
           slot-name: 'QA'
