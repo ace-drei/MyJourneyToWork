@@ -56,9 +56,6 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_576B1447F30B4CF6A613484D707D1065 }}
           package: .
 
-  
-
-  
   DeployToQA:
     runs-on: windows-latest
     needs: build
